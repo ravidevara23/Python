@@ -1,0 +1,31 @@
+# Encoding categorical variables
+onehot_encoder = OneHotEncoder(sparse_output=False, handle_unknown='ignore')
+
+# Define categorical features
+categorical_features = ['continent','education_of_employee','has_job_experience','requires_job_training','region_of_employment','unit_of_wage','full_time_position']
+
+# define individual transformers in a pipeline
+categorical_preprocessing = Pipeline([
+    ('encoder', onehot_encoder)
+    ])
+
+#Combining all transformations
+preprocessor = ColumnTransformer([
+        ('cat', categorical_preprocessing, categorical_features)
+],remainder='passthrough')
+
+
+pipeline =Pipeline([
+    ('preprocessor', preprocessor)
+])
+
+# Fit the pipeline on the training data and transform
+X_train = pipeline.fit_transform(X_train)
+
+# Transform the validation and test data using the fitted pipeline
+X_val = pipeline.transform(X_val)
+X_test = pipeline.transform(X_test)
+
+print("Shape of X_train_encoded:", X_train.shape)
+print("Shape of X_val_encoded:", X_val.shape)
+print("Shape of X_test_encoded:", X_test.shape)
